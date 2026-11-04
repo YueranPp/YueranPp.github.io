@@ -2,7 +2,6 @@
 ---
 title: "Resume"
 author: "Yueran 'Kayla' Pan"
-output: html_document
 ---
 <style>
 .main-container {

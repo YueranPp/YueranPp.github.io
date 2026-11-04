@@ -1,0 +1,21 @@
+---
+title: "_site"
+author: "Yueran Pan"
+date: "2026-11-04"
+output: html_document
+---
+
+name: "Yueran Pan(Kayla)"
+output_dir: "."
+navbar:
+  title: "Home"
+  right:
+    - text: "Resume"
+      href: resume.html
+    - text: "Email"
+      href: mailto:yp2743@cumc.columbia.edu
+    - text: "GitHub"
+      href: https://github.com/YueranPp
+output:
+  html_document:
+    theme: flatly
