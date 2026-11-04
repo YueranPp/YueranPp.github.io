@@ -4,22 +4,67 @@ title: "Resume"
 author: "Yueran 'Kayla' Pan"
 output: html_document
 ---
+<style>
+.main-container {
+  max-width: 900px;
+}
+
+body {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+h1.title {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 23px;
+  margin-top: 30px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #cccccc;
+}
+
+h3 {
+  font-size: 18px;
+  margin-top: 20px;
+}
+</style>
+
 
 ## Education
 
-### Columbia University
+**Columbia University**, Mailman School of Public Health
+<span style="float: right;"><em>Expected May 2027</em></span>
 
-Master's student in Epidemiology.
+
+Master of Public Health<br>
+Certficate in Advacned Epidemiology<br>
+GPA: 3.86/4.0
+
+
+**University of Wisconsin-Madison**, College of Letters and Science
+<span style="float: right;"><em>September 2021 - June 2024</em></span>
+
+Bachelor of Science in Neurobiology<br>
+Certificates in Public Health and Art in 2D studies<br>
+Undergraduate GPA: 3.68/4.0
+
 
 ## Research Experience
 
-### Neuroepidemiology Research
+**Cellular Biology Research**
 
-Study social connections and blood pressure using data from the Health and Retirement Study.
+Breast Cancer Research in dual risk facto.rs of high collagen density and obesity. Susan Ponik Lab, 2022-2024
+
+**Neuroepidemiology Research**
+
+Study social connections and blood pressure using data from the Health and Retirement Study. Sarah Tom Lab, 2026.
+
 
 ## Teaching Experience
 
-Teaching assistant for Research Methods and Analysis.
+Teaching assistant for Core - Research Methods and Analysis - Quant setion. Columbia University, 2026.9-2026.12.
 
 ## Skills
 
