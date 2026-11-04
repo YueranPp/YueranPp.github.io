@@ -1,0 +1,28 @@
+
+---
+title: "Resume"
+author: "Yueran 'Kayla' Pan"
+output: html_document
+---
+
+## Education
+
+### Columbia University
+
+Master's student in Epidemiology.
+
+## Research Experience
+
+### Neuroepidemiology Research
+
+Study social connections and blood pressure using data from the Health and Retirement Study.
+
+## Teaching Experience
+
+Teaching assistant for Research Methods and Analysis.
+
+## Skills
+
+- R and SAS
+- Data cleaning and visualization
+- Epidemiologic research
