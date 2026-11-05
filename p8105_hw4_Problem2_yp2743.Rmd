@@ -7,9 +7,18 @@ output:
     orientation: columns
     vertical_layout: fill
 ---
-select: "NYC Restaurant Inspections"
 
-### Step 0. Import
+The dataset I select is: "NYC Restaurant Inspections"
+
+
+I'm planning to do three graphs reflect relevant violation score x restaurant's association during period 2016.1.1-2019.2.1: 
+1. A scatter plot reflects restaurant's geographic location and its cumulative violation score,
+2. A boxplot showcases restaurant's cuisine type against the violation counts
+3. A bar chart showcasesrestaurant's cuisine type against the total violation scores, if that restaurant only has one kind of score that day.
+
+
+
+Step 0. Import
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(p8105.datasets)
@@ -20,8 +29,8 @@ data(rest_inspec)
 ```
 
 
-### Step 1. Data cleaning, defining my time range: 2016.1.1 - 2019.2.1
-```{r define_inspection_period}
+Step 1. Data cleaning, defining my time range: 2016.1.1 - 2019.2.1
+```{r define_inspection_period, include=FALSE}
 inspection_period =
   rest_inspec |>
   mutate(inspection_date = as.Date(inspection_date)) |>
@@ -31,20 +40,20 @@ inspection_period =
   )
 ```
 
-```{r inspection_summary}
+```{r inspection_summary, include=FALSE}
 inspection_summary =
   inspection_period |>
   group_by(camis, inspection_date, inspection_type) |>
   summarize(
     n_violations = n_distinct(violation_code, na.rm = TRUE),
     n_scores = n_distinct(score, na.rm = TRUE),
-    inspection_score = mean(score, na.rm = TRUE),
+    inspection_score = mean(score, na.rm = TRUE)
   ) |>
   ungroup()
 ```
 
 Checking if the same restaurant, same day, same type of inspection will have score value more than one kind.
-```{r check_inspection_scores}
+```{r check_inspection_scores, include=FALSE}
 inspection_summary |>
   filter(n_scores > 1)
 #There are seven restaurants have types of score more than one in a same day, investigating...
@@ -60,19 +69,15 @@ inspection_period |>
 ```
 
 Summarize each restaurant's cumulative violation score during period 2016.1.1-2019.2.1.
-```{r restaurant_scores}
+```{r restaurant_scores, include=FALSE}
 restaurant_scores =
   inspection_summary |>
   filter(n_scores == 1) |>
   group_by(camis) |>
   summarize(total_score = sum(inspection_score))
-#I only select those who only have one type of violation (because violation score is already a total)
+#Keep inspection groups with one distinct nonmissing score (because I've screened out 7 times of restaurant with more than one nonmissing, distinct score at the same day)
 ```
 
-I'm planning to do three graphs reflect relevant violation score x restaurant's association during period 2016.1.1-2019.2.1: 
-1. A scatter plot reflects restaurant's geographic location and its cumulative violation score,
-2. A boxplot showcases restaurant's cuisine type against the violation counts
-3. A bar chart showcasesrestaurant's cuisine type against the total violation scores, if that restaurant only has one kind of score that day.
 
 ```{r restaurant_data, include=FALSE}
 restaurant_violations =
@@ -95,13 +100,18 @@ restaurant_df =
 ```
 
 
-###Step 2. Making a plot
+
+
+
+
+Step 2. Making three plot
 
 Column {data-width=550}
 -----------------------------------------------------------------------
 
-Scatter plot: Where were violations recorded? | Jan 2016–Jan 2019
+#### Recorded violations by restaurant location | Jan 2016–Jan 2019
 
+Each inspection contributes once (no matter how many types had been checked at that day). Inspctions with missing or conflicting scores are excluded from the totals.
 ```{r violation_scatter, echo=FALSE}
 restaurant_df |>
   filter(
@@ -138,7 +148,7 @@ restaurant_df |>
 
 Column {data-width=450}
 -----------------------------------------------------------------------
-Boxplot: Violations per restaurant by their cuisines
+#### Cumulative inspection points by cuisine
 
 ```{r cuisine_boxplot, echo=FALSE}
 common_cuisines =
@@ -157,7 +167,7 @@ plot_ly(
     c("#16B9F5", "#9252ED", "#F52E91")
   )(nrow(common_cuisines)),
   showlegend = FALSE
-)|>
+) |>
   layout(
     xaxis = list(title = "Recorded violations per restaurant"),
     yaxis = list(title = "", automargin = TRUE)
@@ -175,18 +185,14 @@ restaurant_df |>
   arrange(desc(cumulative_score)) |>
   mutate(cuisine = fct_reorder(cuisine_description, cumulative_score)) |>
   plot_ly(
-    x = ~cumulative_score, y = ~cuisine,
-    type = "bar", orientation = "h",
-  marker = list(
-    color = ~cumulative_score,
-    colorscale = list(
-      list(0,   "#16B9F5"),
-      list(0.5, "#9252ED"),
-      list(1,   "#F52E91")
-    ),
-    showscale = FALSE
-  )
-)|>
+    x = ~ cumulative_score, y = ~ cuisine, 
+    type = "bar", orientation = "h", 
+    marker = list(
+      color = ~ cumulative_score,
+      colorscale = list(list(0, "#16B9F5"), list(0.5, "#9252ED"), list(1, "#F52E91")),
+      showscale = FALSE
+          )
+    ) |>
   layout(
     xaxis = list(title = "Total recorded inspection points"),
     yaxis = list(title = "", automargin = TRUE)
