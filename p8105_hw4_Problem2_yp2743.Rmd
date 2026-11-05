@@ -9,6 +9,7 @@ output:
 ---
 select: "NYC Restaurant Inspections"
 
+### Step 0. Import
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(p8105.datasets)
@@ -19,7 +20,7 @@ data(rest_inspec)
 ```
 
 
-Data cleaning, defining my time range: 2016.1.1 - 2019.2.1
+### Step 1. Data cleaning, defining my time range: 2016.1.1 - 2019.2.1
 ```{r define_inspection_period}
 inspection_period =
   rest_inspec |>
@@ -37,13 +38,13 @@ inspection_summary =
   summarize(
     n_violations = n_distinct(violation_code, na.rm = TRUE),
     n_scores = n_distinct(score, na.rm = TRUE),
-    inspection_scores = mean(score, na.rm = TRUE),
+    inspection_score = mean(score, na.rm = TRUE),
   ) |>
   ungroup()
 ```
 
+Checking if the same restaurant, same day, same type of inspection will have score value more than one kind.
 ```{r check_inspection_scores}
-#Checking if the same restaurant, same day, same type of inspection will have score value more than one kind.
 inspection_summary |>
   filter(n_scores > 1)
 #There are seven restaurants have types of score more than one in a same day, investigating...
@@ -58,10 +59,39 @@ inspection_period |>
   count(score, name = "n_rows")
 ```
 
+Summarize each restaurant's cumulative violation score during period 2016.1.1-2019.2.1.
 ```{r restaurant_scores}
 restaurant_scores =
   inspection_summary |>
   filter(n_scores == 1) |>
   group_by(camis) |>
   summarize(total_score = sum(inspection_score))
+#I only select those who only have one type of violation (because violation score is already a total)
 ```
+
+I'm planning to do three graphs reflect relevant violation score x restaurant's association during period 2016.1.1-2019.2.1: 
+1. A scatter plot reflects restaurant's geographic location and its cumulative violation score,
+2. A boxplot showcases restaurant's cuisine type against the violation counts
+3. A bar chart showcasesrestaurant's cuisine type against the total violation scores, if that restaurant only has one kind of score that day.
+
+```{r restaurant_data, include=FALSE}
+restaurant_violations =
+  inspection_summary |>
+  group_by(camis) |>
+  summarize(total_violations = sum(n_violations))
+
+restaurant_info =
+  inspection_period |>
+  arrange(desc(inspection_date)) |>
+  group_by(camis) |>
+  slice(1) |>
+  ungroup() |>
+  select(camis, dba, cuisine_description, longitude, latitude)
+
+restaurant_df =
+  restaurant_violations |>
+  left_join(restaurant_info, by = "camis") |>
+  left_join(restaurant_scores, by = "camis")
+```
+
+
