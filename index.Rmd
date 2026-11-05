@@ -1,9 +1,0 @@
----
-title: "Yueran Pan (Kayla)"
----
-
-## Hello!
-
-I am a second year master's student in epidemiology at Columbia University. You can call me Kayla or Yueran.
-
-My career interests are neuroepidemiology, social science, and psychology. P8105 is my first R-coding class.

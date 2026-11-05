@@ -148,7 +148,7 @@ restaurant_df |>
 
 Column {data-width=450}
 -----------------------------------------------------------------------
-#### Cumulative inspection points by cuisine
+#### Violations per restaurant by cuisine types
 
 ```{r cuisine_boxplot, echo=FALSE}
 common_cuisines =
@@ -175,7 +175,7 @@ plot_ly(
 #colorRampPalette is not taught in the class. I use this just to define my color scale. 
 ```
 
-Barchart: Cuisines with the highest cumulative inspection scores
+#### Cumulative inspection points by cuisine
 
 ```{r cuisine_barchart, echo=FALSE}
 restaurant_df |>
