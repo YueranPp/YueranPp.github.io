@@ -1,0 +1,58 @@
+---
+title: "p8105_hw4_yp2743"
+author: "Yueran Pan"
+date: "2026-11-04"
+output:  
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+select: "NYC Restaurant Inspections"
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(p8105.datasets)
+library(plotly)
+library(flexdashboard)
+
+data(rest_inspec)
+```
+
+
+Data cleaning, defining my time range: 2016.1.1 - 2019.2.1
+```{r define_inspection_period}
+inspection_period =
+  rest_inspec |>
+  mutate(inspection_date = as.Date(inspection_date)) |>
+  filter(
+    inspection_date >= as.Date("2016-01-01"),
+    inspection_date < as.Date("2019-02-01")
+  )
+```
+
+```{r inspection_summary}
+inspection_summary =
+  inspection_period |>
+  group_by(camis, inspection_date, inspection_type) |>
+  summarize(
+    n_violations = n_distinct(violation_code, na.rm = TRUE),
+    n_scores = n_distinct(score, na.rm = TRUE),
+    inspection_scores = mean(score, na.rm = TRUE),
+  ) |>
+  ungroup()
+```
+
+```{r check_inspection_scores}
+#Checking if the same restaurant, same day, same type of inspection will have score value more than one kind.
+inspection_summary |>
+  filter(n_scores > 1)
+#There are seven more, investigating...
+inspection_period |>
+  filter(
+    camis == 40911114,
+    inspection_date == as.Date("2017-11-04"),
+    inspection_type == "Cycle Inspection / Initial Inspection"
+  ) |>
+  count(score, name = "n_rows")
+```
+
