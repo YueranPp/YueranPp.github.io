@@ -116,13 +116,21 @@ restaurant_df |>
   ) |>
   plot_ly(
     x = ~longitude, y = ~latitude,
-    type = "scatter", mode = "markers",
+  type = "scatter", mode = "markers",
+  text = ~label, hoverinfo = "text",
+  marker = list(
+    size = 4,
+    opacity = 0.85,
     color = ~total_violations,
-    colors = c("#2166AC", "#B2182B"),
-    marker = list(size = 4),
-    alpha = 0.6,
-    text = ~label, hoverinfo = "text"
+    colorscale = list(
+      list(0,    "#16B9F5"),
+      list(0.20, "#9252ED"),
+      list(1,    "#F52E91")
+    ),
+    showscale = TRUE,
+    colorbar = list(title = "Violations")
   )
+)
 ```
 
 
@@ -141,14 +149,20 @@ common_cuisines =
 restaurant_df |>
   filter(cuisine_description %in% common_cuisines$cuisine_description) |>
   mutate(cuisine = fct_reorder(cuisine_description, total_violations)) |>
-  plot_ly(
-    x = ~total_violations, y = ~cuisine,
-    type = "box", orientation = "h"
-  ) |>
+plot_ly(
+  x = ~total_violations, y = ~cuisine,
+  type = "box", orientation = "h",
+  color = ~cuisine,
+  colors = colorRampPalette(
+    c("#16B9F5", "#9252ED", "#F52E91")
+  )(nrow(common_cuisines)),
+  showlegend = FALSE
+)|>
   layout(
     xaxis = list(title = "Recorded violations per restaurant"),
     yaxis = list(title = "", automargin = TRUE)
   )
+#colorRampPalette is not taught in the class. I use this just to define my color scale. 
 ```
 
 Barchart: Cuisines with the highest cumulative inspection scores
@@ -163,8 +177,16 @@ restaurant_df |>
   plot_ly(
     x = ~cumulative_score, y = ~cuisine,
     type = "bar", orientation = "h",
-    marker = list(color = "#2878AA")
-  ) |>
+  marker = list(
+    color = ~cumulative_score,
+    colorscale = list(
+      list(0,   "#16B9F5"),
+      list(0.5, "#9252ED"),
+      list(1,   "#F52E91")
+    ),
+    showscale = FALSE
+  )
+)|>
   layout(
     xaxis = list(title = "Total recorded inspection points"),
     yaxis = list(title = "", automargin = TRUE)
