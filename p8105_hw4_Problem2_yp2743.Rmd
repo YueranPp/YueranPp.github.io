@@ -95,3 +95,78 @@ restaurant_df =
 ```
 
 
+###Step 2. Making a plot
+
+Column {data-width=550}
+-----------------------------------------------------------------------
+
+Scatter plot: Where were violations recorded? | Jan 2016–Jan 2019
+
+```{r violation_scatter, echo=FALSE}
+restaurant_df |>
+  filter(
+    longitude >= -74.3, longitude <= -73.65,
+    latitude >= 40.45, latitude <= 40.95
+  ) |>
+  mutate(
+    label = str_c(
+      dba, "<br>Cuisine: ", cuisine_description,
+      "<br>Recorded violations: ", total_violations
+    )
+  ) |>
+  plot_ly(
+    x = ~longitude, y = ~latitude,
+    type = "scatter", mode = "markers",
+    color = ~total_violations,
+    colors = c("#2166AC", "#B2182B"),
+    marker = list(size = 4),
+    alpha = 0.6,
+    text = ~label, hoverinfo = "text"
+  )
+```
+
+
+
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+Boxplot: Violations per restaurant by their cuisines
+
+```{r cuisine_boxplot, echo=FALSE}
+common_cuisines =
+  restaurant_df |>
+  filter(!is.na(cuisine_description)) |>
+  count(cuisine_description, sort = TRUE)
+
+restaurant_df |>
+  filter(cuisine_description %in% common_cuisines$cuisine_description) |>
+  mutate(cuisine = fct_reorder(cuisine_description, total_violations)) |>
+  plot_ly(
+    x = ~total_violations, y = ~cuisine,
+    type = "box", orientation = "h"
+  ) |>
+  layout(
+    xaxis = list(title = "Recorded violations per restaurant"),
+    yaxis = list(title = "", automargin = TRUE)
+  )
+```
+
+Barchart: Cuisines with the highest cumulative inspection scores
+
+```{r cuisine_barchart, echo=FALSE}
+restaurant_df |>
+  filter(!is.na(cuisine_description), !is.na(total_score)) |>
+  group_by(cuisine_description) |>
+  summarize(cumulative_score = sum(total_score)) |>
+  arrange(desc(cumulative_score)) |>
+  mutate(cuisine = fct_reorder(cuisine_description, cumulative_score)) |>
+  plot_ly(
+    x = ~cumulative_score, y = ~cuisine,
+    type = "bar", orientation = "h",
+    marker = list(color = "#2878AA")
+  ) |>
+  layout(
+    xaxis = list(title = "Total recorded inspection points"),
+    yaxis = list(title = "", automargin = TRUE)
+  )
+```
