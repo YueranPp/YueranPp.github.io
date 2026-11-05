@@ -46,7 +46,9 @@ inspection_summary =
 #Checking if the same restaurant, same day, same type of inspection will have score value more than one kind.
 inspection_summary |>
   filter(n_scores > 1)
-#There are seven more, investigating...
+#There are seven restaurants have types of score more than one in a same day, investigating...
+
+#Checking one of them, finding out there are 4 rows of score 15, and 5 rows of score 20.
 inspection_period |>
   filter(
     camis == 40911114,
@@ -56,3 +58,10 @@ inspection_period |>
   count(score, name = "n_rows")
 ```
 
+```{r restaurant_scores}
+restaurant_scores =
+  inspection_summary |>
+  filter(n_scores == 1) |>
+  group_by(camis) |>
+  summarize(total_score = sum(inspection_score))
+```
